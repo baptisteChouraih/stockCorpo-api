@@ -6,7 +6,7 @@ CREATE TABLE Users
     name    VARCHAR(20) NOT NULL,
     email   VARCHAR(50) NOT NULL UNIQUE,
     pwd     VARCHAR(20) NOT NULL,
-    isAdmin BOOLEAN
+    isAdmin BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE Suggestion
@@ -35,8 +35,8 @@ CREATE TABLE Logs
     FOREIGN KEY (idUser) REFERENCES Users (idUsers)
 );
 
-INSERT INTO Users (name, email, pwd, isAdmin)
-VALUES ('test', 'test@gmail.com', 'test', false);
+INSERT INTO Users (name, email, pwd)
+VALUES ('test', 'test@gmail.com', 'test');
 
 INSERT INTO Suggestion (idUsers, suggestion)
 VALUES (1, 'carl demission');
