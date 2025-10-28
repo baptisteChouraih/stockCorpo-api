@@ -24,6 +24,7 @@ func SetupRouter(userHandler *handlers.UserHandler, productHandler *handlers.Pro
 		product := api.Group("/product")
 		{
 			product.POST("", productHandler.CreateProduct)
+			product.PUT("", productHandler.EditProduct)
 		}
 	}
 	return router

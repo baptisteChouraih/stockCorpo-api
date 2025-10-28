@@ -35,3 +35,10 @@ func (p *ProductService) CreateProduct(ctx context.Context, product *models.Prod
 
 	return p.productRepo.Create(ctx, product)
 }
+
+func (p *ProductService) EditProduct(ctx context.Context, product *models.Product) error {
+	if product.Stock == nil {
+		return errors.New("stock is required")
+	}
+	return p.productRepo.EditStock(ctx, product)
+}

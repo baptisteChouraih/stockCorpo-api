@@ -15,17 +15,10 @@ func NewProductRepo(db *pgxpool.Pool) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-// Create : permet de cree un produit dans la bdd
+// Create : permet de cree un produit dans la bdd et récupéré son id générer automatiquement
 func (r *ProductRepository) Create(ctx context.Context, product *models.Product) error {
-	query := "INSERT INTO Product (types, price, stock) VALUES ($1, $2, $3)"
-	_, err := r.db.Exec(ctx, query, product.Types, product.Price, product.Stock)
-	return err
-}
-
-// GetId : permet de retrouver l'id d'un produit pour le modifier
-func (r *ProductRepository) GetId(ctx context.Context, id int, product *models.Product) error {
-	query := "SELECT idproduct FROM Product WHERE idproduct=$1"
-	err := r.db.QueryRow(ctx, query, id).Scan(
+	query := "INSERT INTO Product (types, price, stock) VALUES ($1, $2, $3) RETURNING idproduct"
+	err := r.db.QueryRow(ctx, query, product.Types, product.Price, product.Stock).Scan(
 		&product.IdProduct,
 	)
 	return err
