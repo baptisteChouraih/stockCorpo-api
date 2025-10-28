@@ -39,7 +39,7 @@ func (r *UserRepository) Create(ctx context.Context, user *models.Users) error {
 	}
 
 	// Insertion dans la bdd
-	query := "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)"
+	query := "INSERT INTO users (name, email, pwd) VALUES ($1, $2, $3)"
 	_, err = r.db.Exec(ctx, query, user.Name, user.Email, hashPwd)
 	return err
 }
