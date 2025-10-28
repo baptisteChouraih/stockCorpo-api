@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS Users, Suggestion, Product, Logs;
 CREATE TABLE Users
 (
     idUsers SERIAL PRIMARY KEY,
-    name    VARCHAR(20) NOT NULL,
+    name    VARCHAR(50) NOT NULL,
     email   VARCHAR(50) NOT NULL UNIQUE,
-    pwd     VARCHAR(20) NOT NULL,
+    pwd     VARCHAR(100) NOT NULL,
     isAdmin BOOLEAN DEFAULT FALSE
 );
 
@@ -34,15 +34,3 @@ CREATE TABLE Logs
     timestamp TIMESTAMP,
     FOREIGN KEY (idUser) REFERENCES Users (idUsers)
 );
-
-INSERT INTO Users (name, email, pwd)
-VALUES ('test', 'test@gmail.com', 'test');
-
-INSERT INTO Suggestion (idUsers, suggestion)
-VALUES (1, 'carl demission');
-
-INSERT INTO Product (types, price, stock)
-VALUES ('snack', 0.80, false);
-
-INSERT INTO Logs (idUser, action, details, timestamp)
-VALUES (1, 'ADD', 'AJOUT PRODUIT', NOW());
