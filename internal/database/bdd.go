@@ -6,21 +6,26 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 )
 
 func Connection() (*pgxpool.Pool, error) {
-	bdd := fmt.Sprintf(
-		os.Getenv("DB_URL"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_NAME"),
-	)
-
-	pool, err := pgxpool.New(context.Background(), bdd)
-	if err != nil {
-		return nil, fmt.Errorf("echec de la connection a la base %w", err)
+	// Charge le fichier .env
+	if err := godotenv.Load(); err != nil {
+		return nil, fmt.Errorf("erreur chargement .env: %w", err)
 	}
-	return pool, nil
 
+	// Récupère la connection string
+	connString := os.Getenv("DB_URL")
+	if connString == "" {
+		return nil, fmt.Errorf("DB_URL n'est pas définie")
+	}
+
+	// Connexion
+	pool, err := pgxpool.New(context.Background(), connString)
+	if err != nil {
+		return nil, fmt.Errorf("echec connexion: %w", err)
+	}
+
+	return pool, nil
 }
