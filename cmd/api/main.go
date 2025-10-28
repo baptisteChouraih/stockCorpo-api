@@ -18,12 +18,15 @@ func main() {
 	defer db.Close()
 	// Repository
 	userRepo := repositories.NewUserRepo(db)
+	productRepo := repositories.NewProductRepo(db)
 	// Service
 	userService := services.NewUserService(userRepo)
+	productService := services.NewProductService(productRepo)
 	// Handler
 	userHandler := handlers.NewUserHandler(userService)
+	productHandler := handlers.NewProductHandler(productService)
 	// Router et serveur (utilise Gin ici)
-	router := server.SetupRoutes(userHandler)
+	router := server.SetupRouter(userHandler, productHandler)
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal("Erreur serveur:", err)
 	}
