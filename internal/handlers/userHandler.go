@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"stockCorpo-api/internal/models"
 	"stockCorpo-api/internal/repositories"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
@@ -16,30 +17,17 @@ func NewUserHandler(repo *repositories.UserRepository) *UserHandler {
 	return &UserHandler{userRepo: repo}
 }
 
-func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	// Vérifie si la methode utiliser est POST (pour cree un user ta vu)
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		//Si c est pas post return erreur jsp combien je sais juste ca marche pas
-		return
-	}
-
+func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user models.Users
-	// Decode le Json
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	defer r.Body.Close()
 
-	// Crée l'utilisateur dans la base de données (pratique)
-	err := handler.userRepo.Create(r.Context(), &user)
-	if err != nil {
-		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+	if err := h.userRepo.Create(c.Request.Context(), &user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	// Retourne une réponse de succès
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
+
+	c.JSON(http.StatusCreated, gin.H{"Message": "User created successfully!"})
 }
