@@ -6,6 +6,7 @@ import (
 	"stockCorpo-api/internal/handlers"
 	"stockCorpo-api/internal/repositories"
 	"stockCorpo-api/internal/server"
+	"stockCorpo-api/internal/services"
 )
 
 func main() {
@@ -17,8 +18,10 @@ func main() {
 	defer db.Close()
 	// Repository
 	userRepo := repositories.NewUserRepo(db)
+	// Service
+	userService := services.NewUserService(userRepo)
 	// Handler
-	userHandler := handlers.NewUserHandler(userRepo)
+	userHandler := handlers.NewUserHandler(userService)
 	// Router et serveur (utilise Gin ici)
 	router := server.SetupRoutes(userHandler)
 	if err := router.Run(":8080"); err != nil {

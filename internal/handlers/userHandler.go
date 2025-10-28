@@ -3,18 +3,18 @@ package handlers
 import (
 	"net/http"
 	"stockCorpo-api/internal/models"
-	"stockCorpo-api/internal/repositories"
+	"stockCorpo-api/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
-	userRepo *repositories.UserRepository
+	userService *services.UserService
 }
 
 // NewUserHandler : cree une nouvelle instance de UserHandler tqt, je sais ce que je fais
-func NewUserHandler(repo *repositories.UserRepository) *UserHandler {
-	return &UserHandler{userRepo: repo}
+func NewUserHandler(serv *services.UserService) *UserHandler {
+	return &UserHandler{userService: serv}
 }
 
 func (h *UserHandler) CreateUser(c *gin.Context) {
@@ -24,7 +24,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	if err := h.userRepo.Create(c.Request.Context(), &user); err != nil {
+	if err := h.userService.CreateUser(c.Request.Context(), &user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
