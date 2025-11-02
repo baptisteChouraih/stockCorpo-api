@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler) *gin.Engine {
+func SetupRouter(userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler, suggestionHandler *handlers.SuggestionHandler) *gin.Engine {
 
 	router := gin.Default()
 
