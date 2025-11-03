@@ -37,6 +37,10 @@ func (p *ProductService) CreateProduct(ctx context.Context, product *models.Prod
 }
 
 func (p *ProductService) EditProduct(ctx context.Context, product *models.Product) error {
+	if product.IdProduct == nil {
+		return errors.New("idproduct is required")
+	}
+
 	if product.Stock == nil {
 		return errors.New("stock is required")
 	}
