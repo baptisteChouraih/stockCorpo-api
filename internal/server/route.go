@@ -26,6 +26,13 @@ func SetupRouter(userHandler *handlers.UserHandler, productHandler *handlers.Pro
 			product.POST("", productHandler.CreateProduct)
 			product.PUT("", productHandler.EditProduct)
 		}
+		suggestion := api.Group("/suggestion")
+		{
+			suggestion.POST("", suggestionHandler.CreateSuggestion)
+			suggestion.DELETE("", suggestionHandler.DeleteSuggestion)
+			suggestion.PUT("", suggestionHandler.UpdateSuggestion)
+			suggestion.GET("", suggestionHandler.GetAllSuggestions)
+		}
 	}
 	return router
 }

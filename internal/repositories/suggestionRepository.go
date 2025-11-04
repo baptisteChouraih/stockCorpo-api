@@ -43,19 +43,19 @@ func (repository *SuggestionRepository) GetAll(ctx context.Context) ([]models.Su
 	var suggestions []models.Suggestion
 	rows, err := repository.pool.Query(ctx, "SELECT suggestion FROM Suggestion")
 	if err != nil {
-		return nil, fmt.Errorf("echec de la recuperation des suggestions : w%", err)
+		return nil, fmt.Errorf("echec de la recuperation des suggestions : %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var suggestion models.Suggestion
 		if err := rows.Scan(&suggestion.Suggestion); err != nil {
-			return nil, fmt.Errorf("echec du scan de la ligne : w%", err)
+			return nil, fmt.Errorf("echec du scan de la ligne : %w", err)
 		}
 		suggestions = append(suggestions, suggestion)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("erreur de lecture des lignes: w%", err)
+		return nil, fmt.Errorf("erreur de lecture des lignes: %w", err)
 	}
 	return suggestions, nil
 }
@@ -64,7 +64,7 @@ func (repository *SuggestionRepository) Update(ctx context.Context, suggestion *
 	query := `
 		UPDATE Suggestion
 		SET suggestion = $1
-		WHERE id = $2
+		WHERE idsuggestion = $2
 	`
 
 	_, err := repository.pool.Exec(ctx, query, suggestion.Suggestion, suggestion.IdSuggestion)

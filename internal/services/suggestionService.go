@@ -8,11 +8,11 @@ import (
 )
 
 type SuggestionService struct {
-	repository repositories.SuggestionRepository
+	repository *repositories.SuggestionRepository
 }
 
 // creer un objet SuggestionService
-func NewSuggestionService(repository repositories.SuggestionRepository) *SuggestionService {
+func NewSuggestionService(repository *repositories.SuggestionRepository) *SuggestionService {
 	return &SuggestionService{repository: repository}
 }
 
