@@ -4,11 +4,15 @@ import (
 	"errors"
 	"stockCorpo-api/internal/models"
 	"stockCorpo-api/internal/repositories"
+	"time"
 
 	"context"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var jwtKey = []byte("JWT_KEY")
 
 type UserService struct {
 	userRepo *repositories.UserRepository
@@ -48,4 +52,30 @@ func (s *UserService) CreateUser(ctx context.Context, user *models.Users) error 
 	}
 	user.Pwd = hashPwd
 	return s.userRepo.Create(ctx, user)
+}
+
+func (s *UserService) Login(ctx context.Context, email, password string) (string, error) {
+	user, err := s.userRepo.GetByEmail(ctx, email)
+	if err != nil {
+		return "", errors.New("utilisateur introuvable")
+	}
+
+	err = CheckPassword(user.Pwd, password)
+	if err != nil {
+		return "", errors.New("mot de passe invalide")
+	}
+
+	claims := jwt.MapClaims{
+		"user_id": user.IdUsers,
+		"email":   user.Email,
+		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }

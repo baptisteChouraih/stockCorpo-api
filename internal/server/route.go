@@ -2,6 +2,7 @@ package server
 
 import (
 	"stockCorpo-api/internal/handlers"
+	"stockCorpo-api/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,7 @@ func SetupRouter(userHandler *handlers.UserHandler, productHandler *handlers.Pro
 		users := api.Group("/user")
 		{
 			users.POST("", userHandler.CreateUser)
+			users.POST("/login", userHandler.Login)
 			//CRUD :
 			//users.PUT (upd)
 			//users.GET (get)
@@ -22,6 +24,7 @@ func SetupRouter(userHandler *handlers.UserHandler, productHandler *handlers.Pro
 		}
 
 		product := api.Group("/product")
+		product.Use(middleware.AuthMiddleware())
 		{
 			product.POST("", productHandler.CreateProduct)
 			product.PUT("", productHandler.EditProduct)

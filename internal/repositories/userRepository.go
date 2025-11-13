@@ -24,3 +24,14 @@ func (r *UserRepository) Create(ctx context.Context, user *models.Users) error {
 	_, err := r.db.Exec(ctx, query, user.Name, user.Email, user.Pwd)
 	return err
 }
+
+// GetByEmail : trouver un utilisateur avec son email
+func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.Users, error) {
+	var user models.Users
+	query := "SELECT idusers, name, email, pwd FROM users WHERE email = $1"
+	err := r.db.QueryRow(ctx, query, email).Scan(&user.IdUsers, &user.Name, &user.Email, &user.Pwd)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
